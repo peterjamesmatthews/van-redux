@@ -1,4 +1,4 @@
 import van from "vanjs-core";
-import HelloVanJS from "./HelloVanJS";
+import Counter from "./Counter";
 
-van.add(document.body, HelloVanJS());
+van.add(document.body, Counter());
