@@ -1,78 +1,74 @@
-import van from "vanjs-core";
+import { Unsubscribe } from "@reduxjs/toolkit";
+import { ToolkitStore } from "@reduxjs/toolkit/dist/configureStore";
+import van, { State } from "vanjs-core";
 
 /**
  * Necessary state and functionality to connect a redux store to VanJS
  */
 export class ConnectedStore {
   /**
-   * Reference to the redux store
+   * The redux store this is connected to.
    */
-  store: any = null;
+  store: ToolkitStore;
 
   /**
-   * Array of bindings between a selector function and a VanJS state
-   *
-   * TODO this is the wrong data structure. Need something to map a selector function to a VanJS state.
+   * Callback to disconnect this store.
    */
-  connections: any[] = [];
+  unsubscribe: Unsubscribe;
 
   /**
-   * Array of redux store subscriptions
+   * Maps selector functions to their van state.
    */
-  unsubscribes: any[] = [];
+  connections: Map<
+    (state: ReturnType<typeof this.store.getState>) => unknown,
+    State<unknown>
+  >;
 
-  init(store: any) {
+  constructor(store: ToolkitStore) {
     this.store = store;
-    this.unsubscribes.push(
-      store.subscribe(() => {
-        const state = store.getState();
-        for (const [selector, vanState] of this.connections) {
-          vanState.val = selector(state);
-        }
-      })
-    );
+    this.unsubscribe = store.subscribe(this.update.bind(this));
+    this.connections = new Map();
   }
 
-  getState() {
-    this.store.getState();
+  update() {
+    const state = this.store.getState();
+    this.connections.forEach(
+      (vanState, selector) => (vanState.val = selector(state))
+    );
   }
 
   disconnect() {
-    this.unsubscribes.forEach((unsubscribe) => unsubscribe());
+    this.unsubscribe();
   }
 
-  connect(kwargsToSelectors: { [name: string]: any }) {
-    if (this.store === null) {
-      console.warn("Cannot connect to store before it has been initialized.");
-      return (component: any) =>
-        (kwargs = {}) =>
-          component(kwargs);
-    }
-
-    const currentState = this.store.getState();
-
+  // TODO fix these type hints so that they won't just say "kwargs?: {}"
+  connect(kwargsToSelectors: { [name: string]: any } = {}) {
+    const state = this.store.getState();
     const connectedKwargs = Object.entries(kwargsToSelectors).reduce(
-      (kwargs: { [name: string]: any }, [kwarg, selector]) => {
-        // TODO only create a new VanJS state if there isn't already one for this selector function
-        const state = van.state(selector(currentState));
-        kwargs[kwarg] = state;
-        this.connections.push([selector, state]);
+      (kwargs: any, [kwarg, selector]) => {
+        // reuse or create a VanJS state for this selector's target
+        let vanState = this.connections.get(selector);
+        if (vanState === undefined) {
+          vanState = van.state(selector(state));
+          this.connections.set(selector, vanState);
+        }
+        // set the state into the connected components kwargs
+        kwargs[kwarg] = vanState;
+        // track this connection
+        this.connections.set(selector, vanState);
         return kwargs;
       },
-      { dispatch: this.store.dispatch }
+      { dispatch: this.store.dispatch } // always connect this store's dispatch function
     );
-
-    // TODO fix these type hints so that they won't just say "kwargs?: {}"
     return (component: any) =>
       (kwargs = {}) =>
         component({ ...kwargs, ...connectedKwargs });
   }
-
-  // TODO lol the con.nect API is so ugly
-  nect(kwargsToSelectors: { [name: string]: any } = {}) {
-    return this.connect(kwargsToSelectors);
-  }
 }
 
-const connectedStore = new ConnectedStore();
-export default connectedStore;
+function connectStore(store: ToolkitStore) {
+  const connectedStore = new ConnectedStore(store);
+  return connectedStore.connect.bind(connectedStore);
+}
+
+export default connectStore;
