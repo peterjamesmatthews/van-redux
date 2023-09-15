@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import connectedStore from "../connect";
+import connectStore from "../connect";
 import counter from "./slices/counter";
 
 const store = configureStore({
@@ -8,8 +8,7 @@ const store = configureStore({
   },
 });
 
-connectedStore.init(store);
-
 export type State = ReturnType<typeof store.getState>;
 export type Dispatch = typeof store.dispatch;
+export const connect = connectStore(store);
 export default store;

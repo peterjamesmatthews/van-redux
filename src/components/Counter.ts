@@ -1,6 +1,5 @@
 import van from "vanjs-core";
-import con from "../connect";
-import { Dispatch } from "../store";
+import { Dispatch, connect } from "../store";
 import { decrement, increment } from "../store/slices/counter";
 import Count from "./Count";
 
@@ -79,4 +78,4 @@ function Counter({ dispatch }: Props) {
   );
 }
 
-export default con.nect()(Counter);
+export default connect()(Counter);
