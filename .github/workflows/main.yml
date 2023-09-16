@@ -1,3 +1,5 @@
+name: Vitests
+
 on:
   push:
     branches:
@@ -5,7 +7,6 @@ on:
 
 jobs:
   vitests:
-    name: "Vitests"
     runs-on: ubuntu-latest
     steps:
       - name: Setup Node.js environment
