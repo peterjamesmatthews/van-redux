@@ -1,4 +1,4 @@
-name: Vitests
+name: Tests
 
 on:
   push:
@@ -6,7 +6,8 @@ on:
       - main
 
 jobs:
-  vitests:
+  vitest:
+    name: "Vitest"
     runs-on: ubuntu-latest
     steps:
       - name: Setup Node.js environment
