@@ -41,9 +41,8 @@ class ConnectedStore {
     this.unsubscribe();
   }
 
-  useSelector<T>(
-    selector: (state: ReturnType<typeof this.store.getState>) => T
-  ): State<T> {
+  // TODO - figure out how to type this
+  useSelector<T>(selector: (state: any) => T): State<T> {
     return (this.connections.get(selector) ??
       this.connections
         .set(selector, van.state(selector(this.store.getState())))
