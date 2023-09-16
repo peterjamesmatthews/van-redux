@@ -1,81 +1,25 @@
 import van from "vanjs-core";
-import { Dispatch, connect } from "../store";
+import { useDispatch } from "../store";
 import { decrement, increment } from "../store/slices/counter";
 import Count from "./Count";
 
-type Props = {
-  dispatch: Dispatch;
-};
+const { br, button, div } = van.tags;
 
-function Counter({ dispatch }: Props) {
-  return van.tags.div(
-    van.tags.button({
+export default function Counter() {
+  const dispatch = useDispatch();
+
+  return div(
+    button({
       textContent: "Increment",
       style: "user-select: none;",
-      onclick: () => {
-        dispatch(increment());
-      },
+      onclick: () => dispatch(increment()),
     }),
-    van.tags.button({
+    button({
       textContent: "Decrement",
       style: "user-select: none;",
-      onclick: () => {
-        dispatch(decrement());
-      },
+      onclick: () => dispatch(decrement()),
     }),
-    van.tags.br(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count(),
-    Count()
+    br(),
+    ...Array(50).fill(Count())
   );
 }
-
-export default connect()(Counter);

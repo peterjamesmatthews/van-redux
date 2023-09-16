@@ -10,5 +10,5 @@ const store = configureStore({
 
 export type State = ReturnType<typeof store.getState>;
 export type Dispatch = typeof store.dispatch;
-export const connect = connectStore(store);
 export default store;
+export const { useDispatch, useSelector, disconnect } = connectStore(store);

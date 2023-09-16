@@ -1,13 +1,7 @@
-import { State } from "vanjs-core";
-import { connect } from "../store";
+import { useSelector } from "../store";
 import { selectCount } from "../store/slices/counter";
 
-type CountProps = {
-  count: State<ReturnType<typeof selectCount>>;
-};
-
-function Count({ count }: CountProps) {
+export default function Count() {
+  const count = useSelector(selectCount);
   return count;
 }
-
-export default connect({ count: selectCount })(Count);

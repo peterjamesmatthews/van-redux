@@ -4,8 +4,8 @@ import sleep from "./sleep";
 const { pre } = van.tags;
 
 const Van = ({ sleepMs = 100 }) => {
-  const headingSpaces = van.state(40),
-    trailingUnderscores = van.state(0);
+  const headingSpaces = van.state(40);
+  const trailingUnderscores = van.state(0);
 
   const animate = async () => {
     while (headingSpaces.val > 0) {
