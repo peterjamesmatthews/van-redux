@@ -18,8 +18,8 @@ const Van = ({ sleepMs = 100 }) => {
   return pre(
     () =>
       `${" ".repeat(headingSpaces.val)}🚐💨Hello VanJS!${"_".repeat(
-        trailingUnderscores.val
-      )}`
+        trailingUnderscores.val,
+      )}`,
   );
 };
 

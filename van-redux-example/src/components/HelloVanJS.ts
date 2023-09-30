@@ -11,6 +11,6 @@ export default function () {
     button({ onclick: () => van.add(dom, Van({ sleepMs: 100 })) }, "Hello 🚶‍♂️"),
     button({ onclick: () => van.add(dom, Van({ sleepMs: 10 })) }, "Hello 🏎️"),
     button({ onclick: () => van.add(dom, Van({ sleepMs: 2 })) }, "Hello 🚀"),
-    dom
+    dom,
   );
 }

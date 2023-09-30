@@ -41,23 +41,18 @@ class ConnectedStore {
     this.unsubscribe();
   }
 
-  // TODO - figure out how to type this
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ // TODO type this method
   useSelector<T>(selector: (state: any) => T): State<T> {
     return (this.connections.get(selector) ??
       this.connections
         .set(selector, van.state(selector(this.store.getState())))
         .get(selector)) as State<T>;
   }
-
-  useDispatch() {
-    return this.store.dispatch;
-  }
 }
 
 export default function connectStore(store: ToolkitStore) {
   const connectedStore = new ConnectedStore(store);
   return {
-    useDispatch: connectedStore.useDispatch.bind(connectedStore),
     useSelector: connectedStore.useSelector.bind(connectedStore),
     disconnect: connectedStore.disconnect.bind(connectedStore),
   };
